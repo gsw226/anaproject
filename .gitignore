@@ -1,0 +1,15 @@
+anaenv
+anaenv.*
+
+instance
+instance.*
+
+README.md
+*.md
+
+instace
+migrations
+
+.DS_Store
+**.DS_Store
+.vscode
