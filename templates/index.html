@@ -2,9 +2,33 @@
 <html>
 <head>
     <title>간단한 웹페이지</title>
+    <style>
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #8e44ad, #9b59b6); /* 보라색 그라디언트 */
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.6);
+        }
+    </style>
 </head>
 <body>
     <h1>환영합니다!</h1>
     <p>이곳은 간단한 웹페이지입니다.</p>
+    <a href="/gsw"><button>존잘 상우 만나러 가기</button></a>
 </body>
 </html>

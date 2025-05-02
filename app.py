@@ -59,24 +59,32 @@ def sign():
         return render_template('sign.html')
 
 
-@app.route('/login', methods=['POST','GET']) # 이메일, 비밀번호
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         login_email = request.form['login_email']
         login_password = request.form['login_password']
         print(login_email)
+
+        if not login_email or not login_password:
+            return redirect('/login')
+
         user = User.query.filter_by(email=login_email).first()
-        if user.email == login_email:
-            if unhash_password(login_password,user.password):
-                session['uid'] = login_email
-                return redirect('/') 
-            else:
-                return render_template('login.html')
+
+        if user and unhash_password(login_password, user.password):
+            session['uid'] = login_email
+            return redirect('/')
         else:
-            return render_template('login.html')
+            return redirect('/login')
     else:
         return render_template('login.html')
 
+
+@app.route('/gsw',methods=['POST','GET'])
+def gsw():
+    # if request.method == 'POST':
+    #     return render_template('gsw.html')
+    return render_template('gsw.html')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port="5000", debug=True)
