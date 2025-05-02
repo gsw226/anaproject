@@ -3,12 +3,11 @@ from flask import Flask, render_template, request, session, redirect
 from flask_migrate import Migrate
 from controller import hash_password
 from controller import unhash_password
-import pandas as pd
 import re
 
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'my_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///User.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -22,15 +21,11 @@ class User(db.Model):
 @app.route("/",methods=['POST','GET'])
 def index():
     uid = session.get('uid','')
-    if uid == '':
-        redirect("/sign")
+    if uid == None or uid == "":
+        return redirect('/sign')
     if request.method == 'POST':
-        uid = session.get('uid','')
-        if uid == '':
-            redirect("/sign")
-        return render_template('index.html',uid)
-    return render_template('index.html')
-
+        return render_template('index.html',uid=uid)
+    return render_template('index.html', uid=uid)
 
 
 @app.route('/sign', methods=['POST', 'GET'])  # 이메일, 비밀번호 db로 전송
@@ -69,6 +64,7 @@ def login():
     if request.method == 'POST':
         login_email = request.form['login_email']
         login_password = request.form['login_password']
+        print(login_email)
         user = User.query.filter_by(email=login_email).first()
         if user.email == login_email:
             if unhash_password(login_password,user.password):
