@@ -18,6 +18,20 @@ class User(db.Model):
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
 
+class Question(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(120), nullable=False)
+    text = db.Column(db.String(500), nullable=False)
+
+
+def get_user_info(email):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return user.id, user.password
+    else:
+        return None, None
+
+
 @app.route("/",methods=['POST','GET'])
 def index():
     uid = session.get('uid','')
@@ -59,23 +73,74 @@ def sign():
         return render_template('sign.html')
 
 
-@app.route('/login', methods=['POST','GET']) # 이메일, 비밀번호
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         login_email = request.form['login_email']
         login_password = request.form['login_password']
         print(login_email)
+
+        if not login_email or not login_password:
+            return redirect('/login')
+
         user = User.query.filter_by(email=login_email).first()
-        if user.email == login_email:
-            if unhash_password(login_password,user.password):
-                session['uid'] = login_email
-                return redirect('/') 
-            else:
-                return render_template('login.html')
+
+        if user and unhash_password(login_password, user.password):
+            session['uid'] = login_email
+            return redirect('/')
         else:
-            return render_template('login.html')
+            return redirect('/login')
     else:
         return render_template('login.html')
+
+
+@app.route('/gsw',methods=['POST','GET'])
+def gsw():
+    # if request.method == 'POST':
+    #     return render_template('gsw.html')
+    return render_template('gsw.html')
+
+@app.route('/q',methods=['POST','GET'])
+def q():
+    if request.method == 'POST':
+        uid = session.get('uid','')
+        question = request.form['question']
+        new_question = Question(email=uid,text=question)
+        db.session.add(new_question)
+        db.session.commit()
+        return render_template('q.html')
+    return render_template('q.html')
+
+@app.route('/mypage',methods=['POST','GET'])
+def mypage():
+    password_pattern = r'^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).+$'
+    
+    uid = session.get('uid','')
+    if uid == None or uid == "":
+        return redirect('/sign')
+    
+    idx, hashed_password = get_user_info(uid)
+    
+    if request.method == 'POST':
+        original_password = request.form['original_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+    
+        if not unhash_password(original_password, hashed_password):
+            return render_template('mypage.html', msg="현재 비밀번호가 일치하지 않습니다.",uid=uid)
+    
+    
+        if new_password != confirm_password or new_password=='' or confirm_password=='':
+            return render_template('mypage.html',msg="비밀번호를 확인해주세요.",uid=uid)
+    
+        if re.match(password_pattern, new_password):
+            user = User.query.filter_by(email=uid).first()
+            user.password = hash_password(new_password)
+            db.session.commit()
+            return render_template('mypage.html', msg="비밀번호가 성공적으로 변경되었습니다.",uid=uid)
+        else:
+            return render_template('mypage.html', msg = "비밀번호 규칙을 확인하세요.",uid=uid) 
+    return render_template('mypage.html',uid=uid)
 
 
 if __name__ == '__main__':

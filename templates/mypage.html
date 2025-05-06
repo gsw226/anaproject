@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+</head>
+<body>
+    {{uid}}
+    {{password}}
+<form action="/mypage" method="POST">
+    <label for="original_password">현재 비밀번호:</label><br/>
+    <input type="password" id="original_password" name="original_password" required><br/>
+    <label for="new_password">새로운 비밀번호:</label><br/>
+    <input type="password" id="new_password" name="new_password" required><br/>
+    <label for="confirm_password">비밀번호 확인:</label><br/>
+    <input type="password" id="confirm_password" name="confirm_password" required><br/>
+    <input type="submit" value="비밀번호 변경">
+</form>
+{%if msg%}
+<script>
+    alert("{{msg}}")
+</script>
+{%endif%}
+</body>
+</html>
