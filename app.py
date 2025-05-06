@@ -18,9 +18,9 @@ class User(db.Model):
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
 
-class question(db.Model):
+class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(120), nullable=False, unique=True)
+    email = db.Column(db.String(120), nullable=False)
     text = db.Column(db.String(500), nullable=False)
 
 
@@ -100,14 +100,12 @@ def gsw():
     #     return render_template('gsw.html')
     return render_template('gsw.html')
 
-@app.route('/q')
+@app.route('/q',methods=['POST','GET'])
 def q():
-    uid = session.get('uid','')
-    if uid == None or uid == "":
-        return redirect('/sign')
     if request.method == 'POST':
+        uid = session.get('uid','')
         question = request.form['question']
-        new_question = question(email=uid,text=question)
+        new_question = Question(email=uid,text=question)
         db.session.add(new_question)
         db.session.commit()
         return render_template('q.html')
@@ -125,14 +123,14 @@ def mypage():
     
     if request.method == 'POST':
         original_password = request.form['original_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
     
         if not unhash_password(original_password, hashed_password):
             return render_template('mypage.html', msg="현재 비밀번호가 일치하지 않습니다.",uid=uid)
     
-        new_password = request.form['new_password']
-        confirm_password = request.form['confirm_password']
     
-        if new_password == confirm_password or new_password=='' or confirm_password=='':
+        if new_password != confirm_password or new_password=='' or confirm_password=='':
             return render_template('mypage.html',msg="비밀번호를 확인해주세요.",uid=uid)
     
         if re.match(password_pattern, new_password):
