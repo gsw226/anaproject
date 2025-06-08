@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View</title>
+</head>
+<body>
+    <h1>Welcome to the View</h1>
+    <p>____________________</p>
+    {% for board in boards %}
+        <div class="board">
+            <h2>{{ board.title }}</h2>
+            <p>{{ board.email }}</p>
+            <p>{{ board.content }}</p>
+            <p>____________________</p>
+        </div>
+    {% endfor %}
+    <h1>Comments</h1>
+    {% for comment in comments %}
+        <div class="comment">
+            <p>{{ comment.email }}</p>
+            <p>{{ comment.content }}</p>
+        </div>
+    {% endfor %}
+    <form action="/view" method="post">
+        <p>Comment</p>
+        <textarea id="comment" name="comment"></textarea>
+        <br>
+        <button type="submit">submit</button>
+    </form>
+    <a href="/board"><button>게시판으로 가기</button></a>
+</body>
+</html>
+

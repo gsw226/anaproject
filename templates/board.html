@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Board</title>
+</head>
+<body>
+    <h1>Welcome to the Board</h1>
+    <a href="/create"><button>새로 작성하기</button></a>
+    {% for board in boards %}
+        <p>____________________</p>
+        <div class="board">
+            <a href="/view?email={{ board.email }}&title={{ board.title }}">
+                <h2>{{ board.title }}</h2>
+                <p>{{ board.email }}</p>
+                <!-- <p>{{ board.content }}</p> -->
+            </a>
+        </div>
+    {% endfor %}
+</body>
+</html>
