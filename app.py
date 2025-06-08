@@ -116,9 +116,10 @@ def create():
     if uid == None or uid == "":
         return redirect('/sign')
     if request.method == 'POST':
-        title = request.form.get('title')   
+        title = request.form.get('title')
         content = request.form.get('content')
-
+        if(content == None or title == None):
+            return redirect('/board')
         new_create = Board(email=uid, title=title, content=content)
         db.session.add(new_create)
         db.session.commit()
