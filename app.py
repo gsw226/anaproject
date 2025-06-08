@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, session, redirect
 from flask_migrate import Migrate
 from controller import hash_password
 from controller import unhash_password
-import re
+import re   
 
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'my_secret_key'
@@ -18,11 +18,17 @@ class User(db.Model):
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
 
-class Question(db.Model):
+class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(120), nullable=False)
-    text = db.Column(db.String(500), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.String(500), nullable=False)
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(120), nullable=False)
+    title = db.Column(db.String(100), nullable=True)
+    content = db.Column(db.String(500), nullable=False)
 
 def get_user_info(email):
     user = User.query.filter_by(email=email).first()
@@ -30,7 +36,6 @@ def get_user_info(email):
         return user.id, user.password
     else:
         return None, None
-
 
 @app.route("/",methods=['POST','GET'])
 def index():
@@ -65,13 +70,64 @@ def sign():
                     return render_template('login.html', msg = "성공적으로 회원가입 완료")
                 else:
                     return render_template('sign.html', msg = "이메일이 중복 됩니다.")
-            else: 
+            else:
                 return render_template('sign.html', msg = "비밀번호가 일치하지 않습니다.")
         else:
             return render_template('sign.html', msg = "비밀번호 규칙을 확인하세요.")
     else:
         return render_template('sign.html')
 
+@app.route('/board', methods=['GET'])
+def board():
+    uid = session.get('uid','')
+    if uid == None or uid == "":
+        return redirect('/sign')
+    boards = Board.query.order_by(Board.id.desc()).all()
+    return render_template('/board.html', boards=boards)
+
+@app.route('/view', methods=['GET','POST'])
+def view():
+    uid = session.get('uid','')
+    if uid == None or uid == "":
+        return redirect('/sign')
+    search_email = request.args.get('email')
+    search_title = request.args.get('title')
+    print(search_email, search_title)
+    if (request.method == 'POST'):
+        comment_content = request.form.get('comment')
+        print(comment_content)
+        if comment_content:
+            new_comment = Comment(email=uid, title=search_title ,content=comment_content)
+            db.session.add(new_comment)
+            db.session.commit()
+            return redirect('/view?email={}&title={}'.format(search_email, search_title))
+    
+    if search_email and search_title:
+        boards = Board.query.filter_by(email=search_email, title=search_title).all()
+        comments = Comment.query.filter_by(email=search_email, title=search_title).all()
+    else:
+        return redirect('/board')
+    
+    return render_template('view.html', boards=boards, comments=comments)
+
+@app.route('/create', methods=['GET','POST'])
+def create():
+    uid = session.get('uid','')
+    if uid == None or uid == "":
+        return redirect('/sign')
+    if request.method == 'POST':
+        title = request.form.get('title')   
+        content = request.form.get('content')
+
+        new_create = Board(email=uid, title=title, content=content)
+        db.session.add(new_create)
+        db.session.commit()
+        return redirect('/board')
+    return render_template('create.html')
+
+@app.route('/gsw',methods=['GET'])
+def gsw():
+    return render_template('gsw.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -87,29 +143,11 @@ def login():
 
         if user and unhash_password(login_password, user.password):
             session['uid'] = login_email
-            return redirect('/')
+            return redirect('/')    
         else:
             return redirect('/login')
     else:
         return render_template('login.html')
-
-
-@app.route('/gsw',methods=['POST','GET'])
-def gsw():
-    # if request.method == 'POST':
-    #     return render_template('gsw.html')
-    return render_template('gsw.html')
-
-@app.route('/q',methods=['POST','GET'])
-def q():
-    if request.method == 'POST':
-        uid = session.get('uid','')
-        question = request.form['question']
-        new_question = Question(email=uid,text=question)
-        db.session.add(new_question)
-        db.session.commit()
-        return render_template('q.html')
-    return render_template('q.html')
 
 @app.route('/mypage',methods=['POST','GET'])
 def mypage():
