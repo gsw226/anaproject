@@ -101,7 +101,7 @@ def view():
             db.session.add(new_comment)
             db.session.commit()
             return redirect('/view?email={}&title={}'.format(search_email, search_title))
-    
+
     if search_email and search_title:
         boards = Board.query.filter_by(email=search_email, title=search_title).all()
         comments = Comment.query.filter_by(email=search_email, title=search_title).all()
