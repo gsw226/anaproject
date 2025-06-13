@@ -2,34 +2,19 @@
 <html>
 <head>
     <title>상우를 소개합니다!</title>
-    <style>
-        a {
-            text-decoration: none;
-        }
-
-        button {
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #8e44ad, #9b59b6); /* 보라색 그라디언트 */
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.6);
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>환영합니다!</h1>
-    <a href="/board"><button>게시판으로 가기</button></a>
-    <p>이곳은 간단한 웹페이지입니다.</p>
-    <a href="/gsw"><button>존잘 상우 만나러 가기</button></a>
+    <div class="container">
+        <h1>환영합니다!</h1>
+        <div class="text-center">
+            <p class="mb-2">이곳은 간단한 웹페이지입니다.</p>
+            <a href="/board" class="btn">게시판으로 가기</a>
+            <a href="/gsw" class="btn">존잘 상우 만나러 가기</a>
+        </div>
+    </div>
 </body>
 </html>
