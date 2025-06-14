@@ -6,6 +6,7 @@ def hash_password(original_password):
     password = original_password + salt
     hashed_password = pbkdf2_sha256.hash(password)
     return hashed_password
+
 # 복호화
 def unhash_password(original_password, hashed_password):
     salt = 'gsw226'
