@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from controller import hash_password
 from controller import unhash_password
 import re   
-import click
+
 
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'my_secret_key'
@@ -30,16 +30,6 @@ class Comment(db.Model):
     email = db.Column(db.String(120), nullable=False)
     title = db.Column(db.String(100), nullable=True)
     content = db.Column(db.String(500), nullable=False)
-
-@app.cli.command()
-def clear_data():
-    """테이블 구조는 유지하고 데이터만 삭제"""
-    if click.confirm('모든 데이터를 삭제하시겠습니까?'):
-        # 외래키 제약조건을 고려한 순서로 삭제
-        db.session.query(Post).delete()
-        db.session.query(User).delete()
-        db.session.commit()
-        click.echo('🧹 데이터 삭제 완료!')
 
 def get_user_info(email):
     user = User.query.filter_by(email=email).first()
