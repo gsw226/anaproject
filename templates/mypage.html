@@ -1,24 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Page</title>
+    <title>마이페이지</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .user-info {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        .user-info p {
+            margin: 0.5rem 0;
+            color: #666;
+        }
+        .user-info strong {
+            color: #2c3e50;
+        }
+    </style>
 </head>
 <body>
-    {{uid}}
-    {{password}}
-<form action="/mypage" method="POST">
-    <label for="original_password">현재 비밀번호:</label><br/>
-    <input type="password" id="original_password" name="original_password" required><br/>
-    <label for="new_password">새로운 비밀번호:</label><br/>
-    <input type="password" id="new_password" name="new_password" required><br/>
-    <label for="confirm_password">비밀번호 확인:</label><br/>
-    <input type="password" id="confirm_password" name="confirm_password" required><br/>
-    <input type="submit" value="비밀번호 변경">
-</form>
-{%if msg%}
-<script>
-    alert("{{msg}}")
-</script>
-{%endif%}
+    <div class="container">
+        <h1>마이페이지</h1>
+        
+        <div class="user-info">
+            <p><strong>이메일:</strong> {{uid}}</p>
+        </div>
+
+        <form action="/mypage" method="POST">
+            <h2>비밀번호 변경</h2>
+            <div class="form-group">
+                <label for="original_password">현재 비밀번호</label>
+                <input type="password" id="original_password" name="original_password" required>
+            </div>
+            <div class="form-group">
+                <label for="new_password">새 비밀번호</label>
+                <input type="password" id="new_password" name="new_password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">비밀번호 확인</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn">비밀번호 변경</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-2">
+            <a href="/board" class="btn">게시판으로 돌아가기</a>
+        </div>
+    </div>
+
+    {%if msg%}
+    <script>
+        alert("{{msg}}")
+    </script>
+    {%endif%}
 </body>
 </html>
