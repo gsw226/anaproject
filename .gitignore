@@ -13,3 +13,7 @@ migrations
 .DS_Store
 **.DS_Store
 .vscode
+
+__pycache__/
+*.py[cod]
+*$py.class
