@@ -63,18 +63,21 @@ def view():
     search_email = request.args.get('email')
     search_title = request.args.get('title')
     print(search_email, search_title)
+    
     if (request.method == 'POST'):
         comment_content = request.form.get('comment')
         print(comment_content)
         if comment_content:
-            new_comment = Comment(email=uid, title=search_title ,content=comment_content)
+            # 댓글에는 게시글 제목을 저장 (게시글 작성자 이메일이 아님)
+            new_comment = Comment(email=uid, title=search_title, content=comment_content)
             db.session.add(new_comment)
             db.session.commit()
             return redirect('/view?email={}&title={}'.format(search_email, search_title))
 
     if search_email and search_title:
         boards = Board.query.filter_by(email=search_email, title=search_title).all()
-        comments = Comment.query.filter_by(email=search_email, title=search_title).all()
+        # 해당 제목의 모든 댓글을 가져옴 (작성자 이메일 필터링 제거)
+        comments = Comment.query.filter_by(title=search_title).all()
     else:
         return redirect('/board')
     
