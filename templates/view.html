@@ -32,6 +32,12 @@
             min-height: 100px;
             resize: vertical;
         }
+        .no-comments {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin: 2rem 0;
+        }
     </style>
 </head>
 <body>
@@ -46,17 +52,28 @@
 
         <div class="comment-section">
             <h2>댓글</h2>
-            {% for comment in comments %}
-            <div class="comment">
-                <p class="comment-author">{{ comment.email }}</p>
-                <p>{{ comment.content }}</p>
-            </div>
-            {% endfor %}
+            
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="comment">
+                    <p class="comment-author">{{ comment.email }}</p>
+                    <p>{{ comment.content }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-comments">
+                    <p>첫 번째 댓글을 작성해보세요!</p>
+                </div>
+            {% endif %}
 
             <form action="/view" method="post">
+                <!-- 현재 게시글 정보를 유지하기 위한 hidden 필드 -->
+                <input type="hidden" name="email" value="{{ request.args.get('email') }}">
+                <input type="hidden" name="title" value="{{ request.args.get('title') }}">
+                
                 <div class="form-group">
                     <label for="comment">댓글 작성</label>
-                    <textarea id="comment" name="comment" required></textarea>
+                    <textarea id="comment" name="comment" required placeholder="댓글을 입력하세요..."></textarea>
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn">댓글 작성</button>
@@ -70,4 +87,3 @@
     </div>
 </body>
 </html>
-
