@@ -16,6 +16,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    position: relative;
 }
 
 .container {
@@ -252,4 +253,30 @@ textarea:focus {
 
 .user-info strong {
     color: #ff7e5f;
+}
+
+/* 홈 버튼 스타일 */
+.home-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 126, 95, 0.4);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.home-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 126, 95, 0.6);
+    background: linear-gradient(135deg, #ff6b4a, #ffa06b);
 } 
