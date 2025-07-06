@@ -1,34 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>글 작성</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>글 작성</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        textarea {
-            min-height: 200px;
-            resize: vertical;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>새 글 작성</h1>
+    <main class="container">
+        <header class="text-center">
+            <h1>새 글 작성</h1>
+        </header>
+        
         <form action="/create" method="post">
             <div class="form-group">
                 <label for="title">제목</label>
-                <input type="text" id="title" name="title" required>
+                <input type="text" id="title" name="title" placeholder="제목을 입력하세요" required>
             </div>
             <div class="form-group">
                 <label for="content">내용</label>
-                <textarea id="content" name="content" required></textarea>
+                <textarea id="content" name="content" placeholder="내용을 입력하세요" required></textarea>
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn">작성하기</button>
-            </div>
+            <button type="submit" class="btn btn-full">작성하기</button>
         </form>
-    </div>
+    </main>
 </body>
 </html>
