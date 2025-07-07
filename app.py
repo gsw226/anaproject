@@ -53,31 +53,37 @@ def board():
     if uid == None or uid == "":
         return redirect('/sign')
     boards = Board.query.order_by(Board.id.desc()).all()
-    return render_template('/board.html', boards=boards)
+    return render_template('board.html', boards=boards)
 
 @app.route('/view', methods=['GET','POST'])
 def view():
     uid = session.get('uid','')
     if uid == None or uid == "":
         return redirect('/sign')
-    search_email = request.args.get('email')
-    search_title = request.args.get('title')
-    if (search_email==None or search_title==None):
-        return redirect('/board')
-    
-    if (request.method == 'POST'):
+
+    if request.method == 'POST':
         comment_content = request.form.get('comment')
-        if comment_content:
-            new_comment = Comment(email=uid, title=search_title, content=comment_content)
+        post_email = request.form.get('email')
+        post_title = request.form.get('title')
+
+        if comment_content and post_email and post_title:
+            new_comment = Comment(email=uid, title=post_title, content=comment_content)
             db.session.add(new_comment)
             db.session.commit()
-            return redirect('/view?email={}&title={}'.format(search_email, search_title))
+            return redirect('/view?email={}&title={}'.format(post_email, post_title))
+        else:
+            # Redirect to board if form data is incomplete
+            return redirect('/board')
 
-    if search_email and search_title:
-        boards = Board.query.filter_by(email=search_email, title=search_title).all()
-        comments = Comment.query.filter_by(title=search_title).all()
-    else:
+    # Handle GET request
+    search_email = request.args.get('email')
+    search_title = request.args.get('title')
+
+    if not search_email or not search_title:
         return redirect('/board')
+    
+    boards = Board.query.filter_by(email=search_email, title=search_title).all()
+    comments = Comment.query.filter_by(title=search_title).all()
     
     return render_template('view.html', boards=boards, comments=comments)
 
